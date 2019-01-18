@@ -1,0 +1,18 @@
+{
+	"manifest_version": 2,
+	"name": "VolumeMixer",
+	"version": "1.0",
+
+	"applications": {
+      "gecko": {
+         "id": "svenholtrop@gmail.com"
+    	}
+   	},
+
+	"description": "Allows volume management of individual tabs.",
+	"homepage_url": "",
+	"icons": {},
+	"background": {
+		"scripts": ["js/background.js"]
+	}
+}
