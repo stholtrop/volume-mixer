@@ -1,10 +1,7 @@
 var AudioContext = new (window.AudioContext || window.webkitAudioContext);
 var gainNodes = [];
-var currentGain = 1;
-var priority = false;
-var currentlyPlaying = 0;
-var currentPriorities = 0;
-var timeConstant = 0.1;
+var currentGain = 1, priority = false, currentlyPlaying = 0, currentPriorities = 0;
+const timeConstant = 0.1;
 
 const MESSAGES = {
 	SET_GAIN: 'SET_GAIN',
