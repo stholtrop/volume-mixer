@@ -5,7 +5,7 @@ const timeConstant = 0.1;
 
 const MESSAGES = {
 	SET_GAIN: 'SET_GAIN',
-	GET_STATE: 'GET_GAIN',
+	GET_STATE: 'GET_STATE',
 	GIVE_PRIORITY: 'GIVE_PRIORITY',
 	REMOVE_PRIORITY: 'REMOVE_PRIORITY',
 	START_PRIORITY: 'START_PRIORITY',
@@ -27,11 +27,11 @@ function playEnds() {
 }
 
 function addMedia(mediaElements) {
-	for (var e of mediaElements) {
+	for (const e of mediaElements) {
 		e.onplay = playStarts;
 		e.onended = playEnds, e.onpause = playEnds;
-		var gainNode = AudioContext.createMediaStreamSource(e.mozCaptureStream()).connect(audioContext.createGain());
-		gainNode.connect(audioContext.destination);
+		var gainNode = AudioContext.createMediaStreamSource(e.mozCaptureStream()).connect(AudioContext.createGain());
+		gainNode.connect(AudioContext.destination);
 		gainNodes.push(gainNode);
 	}
 
@@ -43,14 +43,17 @@ function getGains() {
 }
 
 function setGains(target) {
-	for (var gainNode of gainNodes) {
-		gainNode.setTargetAtTime(target, AudioContext.currentTime, timeConstant);		
+	console.log(target);
+	for (const gainNode of gainNodes) {
+		gainNode.gain.setTargetAtTime(target, 0, timeConstant);		
 	}
 }
 
 getGains();
 
 browser.runtime.onMessage.addListener(function (msg, sender, response) {
+		if (!gainNodes.length)
+			return;
 		switch (msg.key) {
 			case MESSAGES.SET_GAIN:
 				if (!msg.priority) 
@@ -72,8 +75,7 @@ browser.runtime.onMessage.addListener(function (msg, sender, response) {
 					browser.runtime.sendMessage({key: MESSAGES.END_PRIORITY});
 				break;
 			case MESSAGES.GET_STATE:
-				response({gain : currentGain, priority : priority});
-				return true;
+				return Promise.resolve({gain : currentGain, priority : priority});
 			case MESSAGES.START_PRIORITY:
 				currentPriorities++;
 				if (priority)
